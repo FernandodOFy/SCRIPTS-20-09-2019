@@ -1,0 +1,41 @@
+enable
+configure terminal
+hostname R2
+banner motd "ACESSO APENAS PARA PESSOAS DO TI!"
+ip domain-name rede2.local
+enable secret SenhadaEnable
+line console 0
+password SenhadaConsole
+login
+exit
+service password-encryption
+crypto key generate rsa general-keys modulus 1024
+username asministrador privilege 15 secret SenhaAdmin
+username estagiario privilege 1 secret SenhaEst
+line vty 0 15
+transport input ssh
+exec-timeout 5
+login local
+exit
+login block-for 60 attempts 3 within 60
+security passwords min-length 8
+interface gigabitEthernet 0/1
+ip address 10.40.16.1 255.255.240.0
+no shutdown
+description Rede 10.40.16.0/20
+exit
+interface serial 0/0/0
+ip address 200.200.100.2 255.255.255.252
+no shutdown
+exit
+interface serial 0/0/1
+ip address 200.200.100.14 255.255.255.252
+no shutdown
+exit
+ip route 192.168.1.0 255.255.255.224 200.200.100.1
+ip route 192.168.1.0 255.255.255.224 200.200.100.13
+ip route 192.168.0.0 255.255.255.128 200.200.100.1
+ip route 192.168.0.0 255.255.255.128 200.200.100.13
+ip route 172.16.42.0 255.255.254.0 200.200.100.13
+ip route 172.16.42.0 255.255.254.0 200.200.100.1
+do wr
