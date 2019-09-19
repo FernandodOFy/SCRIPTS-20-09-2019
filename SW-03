@@ -1,0 +1,23 @@
+enable
+configure terminal
+hostname SW-03
+banner motd "ACESSO APENAS PARA PESSOAS DO TI!"
+ip domain-name rede3.local
+enable secret SenhadaEnable
+line console 0
+password SenhadaConsole
+login
+exit
+ip default-gateway 192.168.0.1
+service password-encryption
+crypto key generate rsa general-keys modulus 1024
+username asministrador privilege 15 secret SenhaAdmin
+username estagiario privilege 1 secret SenhaEst
+line vty 0 15
+transport input ssh
+exec-timeout 5
+login local
+exit
+interface vlan 1
+ip address 192.168.0.254 255.255.255.128
+do wr
