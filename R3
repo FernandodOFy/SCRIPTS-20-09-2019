@@ -1,0 +1,41 @@
+enable
+configure terminal
+hostname R3
+banner motd "ACESSO APENAS PARA PESSOAS DO TI!"
+ip domain-name rede3.local
+enable secret SenhadaEnable
+line console 0
+password SenhadaConsole
+login
+exit
+service password-encryption
+crypto key generate rsa general-keys modulus 1024
+username asministrador privilege 15 secret SenhaAdmin
+username estagiario privilege 1 secret SenhaEst
+line vty 0 15
+transport input ssh
+exec-timeout 5
+login local
+exit
+login block-for 60 attempts 3 within 60
+security passwords min-length 8
+interface gigabitEthernet 0/1
+ip address 192.168.0.1 255.255.255.128
+no shutdown
+description Rede 192.168.0.0/25
+exit
+interface serial 0/0/0
+ip address 200.200.100.9 255.255.255.252
+no shutdown
+exit
+interface serial 0/0/1
+ip address 200.200.100.6 255.255.255.252
+no shutdown
+exit
+ip route 192.168.1.0 255.255.255.224 200.200.100.5
+ip route 192.168.1.0 255.255.255.224 200.200.100.10
+ip route 10.40.16.0 255.255.240.0 200.200.100.5
+ip route 10.40.16.0 255.255.240.0 200.200.100.10
+ip route 172.16.42.0 255.255.254.0 200.200.100.10
+ip route 172.16.42.0 255.255.254.0 200.200.100.5
+do wr
